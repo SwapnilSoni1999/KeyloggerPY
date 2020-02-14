@@ -1,0 +1,5 @@
+{
+    "EMAIL": "yourmail@domain.com",
+    "PASSWORD": "yourpasswordhere", 
+    "MAIL_EVERY": 30
+}

